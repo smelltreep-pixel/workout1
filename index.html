@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Calisthenics Workout</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#667eea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f7fa;color:#2d3748;font-size:14px;-webkit-user-select:none;user-select:none;overflow-x:hidden}
+.hdr{background:linear-gradient(135deg,#667eea,#764ba2);padding:18px 15px;text-align:center;position:sticky;top:0;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.hdr h1{color:#fff;font-size:20px;text-shadow:1px 1px 2px rgba(0,0,0,0.2)}
+.hdr small{color:#e2e8f0;font-size:11px}
+.tabs{display:flex;background:#fff;position:sticky;top:58px;z-index:98;box-shadow:0 2px 5px rgba(0,0,0,0.05);border-bottom:1px solid #e2e8f0}
+.tabs a{flex:1;padding:12px 4px;text-align:center;color:#718096;text-decoration:none;font-size:11px;font-weight:bold;border-bottom:3px solid transparent}
+.tabs a.on{color:#667eea;border-bottom-color:#667eea;background:#edf2f7}
+.page{display:none;padding:10px;padding-bottom:80px}
+.ctrl{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.ctrl a{width:46px;height:46px;line-height:44px;text-align:center;border:2px solid #667eea;border-radius:50%;color:#667eea;text-decoration:none;font-size:18px;display:block;background:#fff}
+.ctrl a:active{background:#667eea;color:#fff}
+.ctrl .mid{text-align:center}.ctrl .mid b{color:#2d3748;font-size:16px}.ctrl .mid small{color:#667eea;font-size:11px;display:block;font-weight:600;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.gh{text-align:center;padding:8px;font-size:11px;color:#667eea;background:#edf2f7;border-radius:6px;font-weight:bold}
+.gd{min-height:65px;background:#fff;border-radius:8px;padding:5px;box-shadow:0 1px 4px rgba(0,0,0,0.08);cursor:pointer;border:1px solid #e2e8f0}
+.gd:active{transform:scale(0.97);border-color:#667eea}
+.gd.empty{background:transparent;border:none;box-shadow:none;min-height:0}
+.gd .dn{font-size:12px;color:#a0aec0;font-weight:bold}
+.gd.rest{background:#f7fafc;opacity:0.65}
+.gd .dt{font-size:9px;padding:2px 4px;border-radius:4px;display:block;margin-top:2px;line-height:1.3;font-weight:700}
+.gd.done{border-color:#16a34a;background:#f0fdf4}
+.gd.done .dn{color:#16a34a}
+.gd .done-dot{font-size:8px;color:#16a34a;display:block;margin-top:1px}
+.tp{background:#fef3f2;color:#dc2626}.tl{background:#eff6ff;color:#2563eb}.tc{background:#fff7ed;color:#ea580c}.th{background:#f0fdf4;color:#16a34a}.ts{background:#fefce8;color:#ca8a04}.tr{background:#f3f4f6;color:#9ca3af}.tdd{background:#ecfeff;color:#0891b2}
+.mbg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:200;backdrop-filter:blur(3px)}
+.mbox{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:4px solid #667eea;border-radius:20px 20px 0 0;padding:20px 18px 30px;max-height:85vh;overflow-y:auto}
+.mbox h3{color:#667eea;margin-bottom:5px;font-size:18px}
+.mbox .ph{color:#718096;font-size:13px;margin-bottom:12px}
+.mbox .tp3{color:#d69e2e;font-weight:bold;margin-bottom:10px;font-size:15px}
+.mbox .dlb{background:#fef3c7;color:#92400e;padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:10px;font-weight:600;border-left:4px solid #f59e0b}
+.mbox ul{list-style:none;padding:0}
+.mbox li{padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:13px;color:#4a5568}
+.mbox .notes{background:#f7fafc;border-radius:10px;padding:14px;margin-top:14px;border:1px solid #e2e8f0}
+.mbox .notes h4{margin-bottom:8px;font-size:14px}
+.mbox .notes li{font-size:12px;color:#64748b;border:none;padding:4px 0}
+.mbox .rmsg{color:#718096;text-align:center;padding:20px;font-size:15px}
+.mbox .bar{width:40px;height:5px;background:#cbd5e0;border-radius:3px;margin:0 auto 15px;cursor:pointer}
+.chk-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.chk-item:active{background:#f7fafc}
+.chk-box{width:28px;height:28px;border:2px solid #cbd5e0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;background:#fff}
+.chk-item.checked .chk-box{background:#16a34a;border-color:#16a34a;color:#fff}
+.chk-item.checked .chk-text{text-decoration:line-through;color:#a0aec0}
+.chk-text{font-size:13px;color:#4a5568;flex:1}
+.chk-emoji{font-size:14px;flex-shrink:0}
+.m-prog{background:#e2e8f0;border-radius:10px;height:22px;margin:10px 0;overflow:hidden}
+.m-prog-fill{height:100%;border-radius:10px;transition:width 0.5s;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#fff}
+.m-prog-text{font-size:12px;text-align:center;color:#718096;margin-bottom:5px}
+.complete-btn{display:block;width:100%;padding:14px;margin-top:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;text-align:center}
+.complete-btn.not-done{background:#e2e8f0;color:#718096}
+.complete-btn.all-done{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;box-shadow:0 4px 15px rgba(22,163,74,0.3);animation:pulse2 1.5s infinite}
+@keyframes pulse2{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+
+/* FIRE CELEBRATION */
+.fire-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;pointer-events:none}
+.fire-overlay.show{display:block}
+.fire-particle{position:absolute;pointer-events:none;font-size:30px;animation:fireUp 2s ease-out forwards;opacity:1}
+@keyframes fireUp{
+0%{transform:translateY(0) scale(1) rotate(0deg);opacity:1}
+30%{transform:translateY(-150px) scale(1.3) rotate(20deg);opacity:0.9}
+60%{transform:translateY(-350px) scale(1) rotate(-10deg);opacity:0.6}
+100%{transform:translateY(-600px) scale(0.5) rotate(30deg);opacity:0}
+}
+.fire-particle.big{font-size:50px;animation:fireBig 2.5s ease-out forwards}
+@keyframes fireBig{
+0%{transform:translateY(0) scale(1) rotate(0deg);opacity:1}
+20%{transform:translateY(-100px) scale(1.5) rotate(15deg);opacity:0.95}
+50%{transform:translateY(-300px) scale(1.2) rotate(-20deg);opacity:0.7}
+100%{transform:translateY(-700px) scale(0.3) rotate(40deg);opacity:0}
+}
+.fire-particle.side{animation:fireSide 2s ease-out forwards}
+@keyframes fireSide{
+0%{transform:translate(0,0) scale(1);opacity:1}
+30%{transform:translate(30px,-150px) scale(1.2);opacity:0.9}
+60%{transform:translate(-20px,-350px) scale(0.8);opacity:0.5}
+100%{transform:translate(10px,-600px) scale(0.3);opacity:0}
+}
+
+/* CELEBRATION MODAL */
+.celebrate{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:998;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;flex-direction:column}
+.celebrate.show{display:flex}
+.cel-box{background:#fff;border-radius:25px;padding:35px 25px;text-align:center;margin:20px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275);max-width:320px;width:90%;position:relative;overflow:hidden}
+@keyframes popIn{0%{transform:scale(0) rotate(-10deg);opacity:0}60%{transform:scale(1.1) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}
+.cel-box .cel-fire{font-size:60px;margin-bottom:10px;animation:fireWave 0.5s ease-in-out infinite alternate}
+@keyframes fireWave{0%{transform:scale(1) rotate(-5deg)}100%{transform:scale(1.15) rotate(5deg)}}
+.cel-box h2{color:#dc2626;font-size:26px;margin-bottom:5px;text-shadow:2px 2px 4px rgba(220,38,38,0.3)}
+.cel-box .cel-sub{color:#ea580c;font-size:14px;margin-bottom:10px;font-weight:600}
+.cel-box .cel-msg{color:#4a5568;font-size:15px;margin-bottom:8px;line-height:1.6}
+.cel-box .cel-streak{background:linear-gradient(135deg,#fef3c7,#fef9c3);border-radius:12px;padding:10px;margin:12px 0;border:1px solid #fbbf24}
+.cel-box .cel-streak span{color:#dc2626;font-size:28px;font-weight:bold}
+.cel-box .cel-streak small{color:#92400e;font-size:12px;display:block}
+.cel-close{display:inline-block;padding:14px 35px;background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;border-radius:25px;text-decoration:none;font-weight:bold;font-size:16px;margin-top:10px;box-shadow:0 4px 15px rgba(220,38,38,0.3);cursor:pointer;border:none}
+.cel-close:active{transform:scale(0.95)}
+.cel-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,100,0,0.1) 0%,transparent 70%);animation:glowSpin 3s linear infinite}
+@keyframes glowSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.streak-bar{background:linear-gradient(135deg,#fef3c7,#fef9c3);border:1px solid #fbbf24;border-radius:10px;padding:10px;margin-bottom:10px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px}
+.streak-bar .fire{font-size:20px}.streak-bar .stxt{font-size:13px;color:#92400e;font-weight:600}.streak-bar .snum{font-size:20px;color:#dc2626;font-weight:bold}
+.card{background:#fff;border-radius:12px;padding:15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #e2e8f0}
+.card h3{font-size:15px;margin-bottom:6px}.card .sm{font-size:12px;color:#718096;margin-bottom:8px}.card p{font-size:13px;color:#4a5568;margin-bottom:8px;line-height:1.6}
+.badges{display:flex;flex-wrap:wrap;gap:5px}.badges span{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600}
+.bh{color:#166534;background:#dcfce7}.bf{color:#1e40af;background:#dbeafe}.bp{color:#5b21b6;background:#ede9fe}.bd{color:#9a3412;background:#ffedd5}.by{color:#854d0e;background:#fef9c3}
+.pbar{background:#e2e8f0;border-radius:10px;height:18px;margin:8px 0;overflow:hidden}
+.pfill{height:100%;border-radius:10px;font-size:10px;color:#fff;text-align:center;line-height:18px;font-weight:bold}
+.miles{font-size:13px;color:#718096;line-height:2}.miles b{color:#2d3748}
+.extype{margin-bottom:12px}.extype h4{font-size:14px;color:#4a5568;border-bottom:2px solid #e2e8f0;padding-bottom:5px;margin-bottom:6px}.extype li{font-size:13px;color:#4a5568;padding:4px 0;list-style:none}
+.icsbox{background:linear-gradient(135deg,#dcfce7,#d1fae5);border:2px solid #16a34a;border-radius:16px;padding:25px;text-align:center;margin-bottom:15px}
+.icsbox h3{color:#166534;margin-bottom:10px;font-size:18px}.icsbox p{font-size:14px;color:#166534;margin-bottom:15px}
+.ibtn{display:inline-block;padding:14px 28px;background:#16a34a;color:#fff;border:none;border-radius:25px;font-size:15px;font-weight:bold;cursor:pointer;margin:5px;text-decoration:none}
+.ibtn:active{transform:scale(0.96)}.ibtn.b2{background:#2563eb}.ibtn.b3{background:#7c3aed}
+.isteps{background:#fff;border-radius:12px;padding:15px;text-align:left;margin-top:15px;border:1px solid #e2e8f0}.isteps h4{color:#667eea;margin-bottom:10px}.isteps ol{padding-left:20px;font-size:14px;line-height:2.2;color:#4a5568}.isteps b{color:#16a34a}
+.istat{background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px;text-align:center;margin-top:15px;display:none}.istat p{color:#166534;font-size:14px;font-weight:600}
+.tips{background:linear-gradient(135deg,#fef3c7,#fef9c3);border:1px solid #fbbf24;border-radius:12px;padding:15px;margin-top:15px}.tips h4{color:#92400e;margin-bottom:8px}.tips li{font-size:13px;color:#78350f;padding:5px 0;list-style:none}
+.lgd{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px;background:#fff;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}.lgd span{font-size:11px;padding:5px 10px;border-radius:8px;font-weight:600}
+.stitle{color:#667eea;text-align:center;padding:15px;font-size:18px;font-weight:bold}
+.install-btn{display:none;position:fixed;bottom:15px;left:50%;transform:translateX(-50%);padding:14px 30px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:30px;font-size:15px;font-weight:bold;cursor:pointer;box-shadow:0 4px 20px rgba(102,126,234,0.4);z-index:150}
+</style>
+</head>
+<body>
+<div class="hdr"><h1>🔥 CALISTHENICS UNLOCK</h1><small>20 Apr 2026 - 31 Dis 2027 | Pull-Up Bar</small></div>
+<div class="tabs">
+<a href="javascript:void(0)" class="on" id="T1">📅Cal</a>
+<a href="javascript:void(0)" id="T2">📊Fasa</a>
+<a href="javascript:void(0)" id="T3">🏆Prog</a>
+<a href="javascript:void(0)" id="T4">📋List</a>
+<a href="javascript:void(0)" id="T5">📥ICS</a>
+</div>
+<div class="page" id="P1" style="display:block">
+<div class="streak-bar"><span class="fire">🔥</span><span class="stxt">Streak:</span><span class="snum" id="streakNum">0</span><span class="stxt">hari</span></div>
+<div class="lgd"><span class="tp">🟣Push</span><span class="tl">🔵Pull</span><span class="tc">🟠Core</span><span class="th">🟢HS</span><span class="ts">🟡Skill</span><span class="tr">⚫Rest</span></div>
+<div class="ctrl"><a href="javascript:void(0)" id="BPR">◀</a><div class="mid"><b id="MT"></b><small id="MP"></small></div><a href="javascript:void(0)" id="BNX">▶</a></div>
+<div class="grid" id="GR"></div>
+</div>
+<div class="page" id="P2"><div class="stitle">📊 Timeline Fasa</div><div id="P2C"></div></div>
+<div class="page" id="P3"><div class="stitle">🏆 Skill Progress</div><div id="P3C"></div></div>
+<div class="page" id="P4"><div class="stitle">📋 Senarai Latihan</div><div id="P4C"></div></div>
+<div class="page" id="P5"><div class="stitle">📥 Download Calendar</div>
+<div class="icsbox"><h3>📥 Import ke Calendar</h3><p>Download fail .ics</p>
+<a href="javascript:void(0)" class="ibtn" id="IA">📅 FULL</a><br><br>
+<a href="javascript:void(0)" class="ibtn b2" id="I6">📅 2026</a>
+<a href="javascript:void(0)" class="ibtn b3" id="I7">📅 2027</a></div>
+<div class="istat" id="IS"><p></p></div>
+<div class="isteps"><h4>📱 Cara Import</h4><ol><li>Tekan <b>Download</b></li><li>Buka fail <b>.ics</b></li><li>Pilih <b>Google Calendar</b></li><li>Tekan <b>Import</b></li><li><b>Siap!</b></li></ol></div>
+</div>
+<div class="mbg" id="MBG"><div class="mbox"><div class="bar" id="MBAR"></div><div id="MI"></div></div></div>
+<div class="fire-overlay" id="fireLayer"></div>
+<div class="celebrate" id="CELEB">
+<div class="cel-box">
+<div class="cel-glow"></div>
+<div class="cel-fire">🔥</div>
+<h2>WORKOUT COMPLETE!</h2>
+<div class="cel-sub" id="cSub">Hari ini dah selesai!</div>
+<div class="cel-msg" id="cMsg">Konsisten itu kunci kejayaan! 💪</div>
+<div class="cel-streak"><small>🔥 Streak sekarang</small><span id="cStreak">0</span><small>hari berturut-turut!</small></div>
+<button class="cel-close" id="cClose">LET'S GO! 🔥</button>
+</div>
+</div>
+<button class="install-btn" id="installBtn">📲 Install App</button>
+<script>var PS=new Date(2026,3,20),PE=new Date(2027,11,31),cM=3,cY=2026;
+var BN=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+var HR=['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
+var HFL=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+var PH=[
+{id:1,n:"Fasa 1: Foundation",a:new Date(2026,3,20),b:new Date(2026,6,19),w:"W1-13",d:"Bina kekuatan asas.",cl:"#e74c3c",sk:["Wall HS 60s","Pull-Up 10+","L-Sit 15s","Hollow 30s"],s:{1:{t:"push",l:"PUSH",c:"tp"},2:{t:"pull",l:"PULL",c:"tl"},3:{t:"handstand",l:"HS+CORE",c:"th"},4:{t:"push",l:"PUSH",c:"tp"},5:{t:"pull",l:"PULL+CORE",c:"tl"},6:{t:"skill",l:"SKILL",c:"ts"},0:{t:"rest",l:"REST",c:"tr"}}},
+{id:2,n:"Fasa 2: Skill Foundation",a:new Date(2026,6,20),b:new Date(2026,9,18),w:"W14-26",d:"Tuck variations. Dragon Flag.",cl:"#e67e22",sk:["Tuck FL 10s","Tuck DF","Elbow Flag"],s:{1:{t:"push",l:"PLANCHE PREP",c:"tp"},2:{t:"pull",l:"FL TRAIN",c:"tl"},3:{t:"handstand",l:"HANDSTAND",c:"th"},4:{t:"core",l:"CORE/DF",c:"tc"},5:{t:"skill",l:"FLAG+PULL",c:"ts"},6:{t:"push",l:"PUSH+SKILL",c:"tp"},0:{t:"rest",l:"REST",c:"tr"}}},
+{id:3,n:"Fasa 3: Intermediate",a:new Date(2026,9,19),b:new Date(2027,0,17),w:"W27-39",d:"Advanced tuck & straddle.",cl:"#f1c40f",sk:["Adv Tuck FL","Tuck Planche","Full DF","Side Flag"],s:{1:{t:"push",l:"PLANCHE",c:"tp"},2:{t:"pull",l:"FRONT LEVER",c:"tl"},3:{t:"handstand",l:"HANDSTAND",c:"th"},4:{t:"rest",l:"REST",c:"tr"},5:{t:"core",l:"DRAGON FLAG",c:"tc"},6:{t:"skill",l:"HUMAN FLAG",c:"ts"},0:{t:"rest",l:"REST",c:"tr"}}},
+{id:4,n:"Fasa 4: Advanced",a:new Date(2027,0,18),b:new Date(2027,4,16),w:"W40-56",d:"Straddle holds.",cl:"#2ecc71",sk:["Straddle FL","Adv Tuck PL","HS 10s+","HF Attempts"],s:{1:{t:"push",l:"PLANCHE ADV",c:"tp"},2:{t:"pull",l:"FL ADV",c:"tl"},3:{t:"handstand",l:"HS FREE",c:"th"},4:{t:"core",l:"DF+CORE",c:"tc"},5:{t:"skill",l:"HUMAN FLAG",c:"ts"},6:{t:"legs",l:"LEGS",c:"tr"},0:{t:"rest",l:"REST",c:"tr"}}},
+{id:5,n:"Fasa 5: Refinement",a:new Date(2027,4,17),b:new Date(2027,8,12),w:"W57-73",d:"Clean holds.",cl:"#3498db",sk:["Full FL 3s","Straddle PL","HS 30s","HF 5s"],s:{1:{t:"push",l:"PLANCHE",c:"tp"},2:{t:"pull",l:"FL FULL",c:"tl"},3:{t:"handstand",l:"HS ENDURE",c:"th"},4:{t:"rest",l:"REST",c:"tr"},5:{t:"skill",l:"FLAG+DF",c:"ts"},6:{t:"push",l:"COMBO",c:"tp"},0:{t:"rest",l:"REST",c:"tr"}}},
+{id:6,n:"Fasa 6: Mastery",a:new Date(2027,8,13),b:new Date(2027,11,31),w:"W74-89",d:"Master semua.",cl:"#9b59b6",sk:["Full FL 5-8s","Straddle PL 5s","HS 60s","HF 8-10s"],s:{1:{t:"pull",l:"FL MASTER",c:"tl"},2:{t:"push",l:"PL MASTER",c:"tp"},3:{t:"handstand",l:"HS MASTER",c:"th"},4:{t:"skill",l:"FLAG+DF",c:"ts"},5:{t:"rest",l:"REST",c:"tr"},6:{t:"skill",l:"FULL SKILL",c:"ts"},0:{t:"rest",l:"REST",c:"tr"}}}
+];
+var WD={
+1:{push:["Push-Up 4x15","Diamond PU 3x10","Pike PU 4x8","Pseudo Planche PU 3x6","Dip 3x8"],pull:["Pull-Up 4x6-10","Chin-Up 3x8","Negative PU 5s 4x5","Active Hang 3x30s","Scapular Pull 3x10"],handstand:["Wall HS 5x30-60s","Wall Walk 3x5","Pike Hold 3x20s","Shoulder Tap 3x6"],core:["Knee Raise 4x12","Leg Raise 3x8","L-Sit 4x10-15s","Hollow 4x20-30s"],skill:["Wall HS 10min","Crow Pose 5x10s","Skin the Cat 3x3","L-Sit 5xmax"]},
+2:{push:["Pseudo PU 4x10","Planche Lean 5x10-15s","Pike PU Elevated 4x8","Tuck Planche 5x5s","Diamond PU 3x12"],pull:["Pull-Up 4x8-12","Tuck FL 5x5-10s","Tuck FL Raise 3x5","Scapular 3x10","Ice Cream Maker 3x5"],handstand:["Wall HS 5x45-60s","Chest-Wall HS 4x30s","Kick-Up 10x","Shoulder Tap 3x8"],core:["Leg Raise 4x10","Tuck DF 5x3-5","DF Negative 3x3","Hollow 4x30s","L-Sit 4x15-20s"],skill:["Elbow Flag 5x5-10s","Clutch Flag 3x5s","Skin Cat 3x5","Free HS 10min"]},
+3:{push:["Tuck Planche 5x5-10s","Planche Lean 4x15s","Adv Tuck PL 3x3-5s","Pike PU Decline 4x8","Pseudo PU 3x10"],pull:["Adv Tuck FL 5x5-8s","FL Raises 3x5","Weighted PU 4x5","Archer PU 3x4","Ice Cream 3x5"],handstand:["Free HS 10xmax","Chest-Wall 3x45s","HSPU Neg 4x3","Toe Pull 5xtry"],core:["Full DF 5x1-3","DF Neg Slow 4x3","Windshield Wiper 3x5","V-Up 3x12"],skill:["HF Kicks 5x3","Side Flag 4x5-10s","Clutch Flag 3x5s","Practice 20min"]},
+4:{push:["Straddle PL Lean 5x5-8s","Adv Tuck PL 5x8-12s","PL PU Tuck 3x3","Wall HSPU 4x5","Maltese Lean 3x10s"],pull:["Straddle FL 5x3-5s","Half-Lay FL 3x5s","FL Raises 3x3","1-Arm PU Neg 3x3","Weighted PU 4x5"],handstand:["Free HS 10xmax","HS Walk 3x10","HSPU 4x3-5","1-Arm HS 3x5s"],core:["Full DF 5x3-5","DF Slow Neg 4x3","Wiper 3x6","Hang L-Sit 3x15s"],skill:["Human Flag 5x3-5s","Clutch Flag 4x5s","Circuit 20min","Video Check"],legs:["Pistol Squat 3x5","Shrimp 3x5","Nordic Curl 3x5","Jump Squat 3x10"]},
+5:{push:["Straddle PL 5x5-8s","PL PU Adv Tuck 4x2-3","Full PL Try 5x","Free HSPU 3x3"],pull:["Full FL 5x3-5s","FL Pull-Up 3x3","FL Raise 3x2-3","Weighted PU 3x5"],handstand:["Free HS 5x30s","HS Walk 3x20","Free HSPU 4x3","Press HS 5xtry"],core:["DF 5x5","Wiper 4x8","V-Sit 3x10s","Manna 3x5s"],skill:["Human Flag 5x5-8s","DF 4x5","Combo 30min","Weakness 15min"]},
+6:{push:["Full Planche 6x5-8s","PL PU 4x3","Maltese 3x10s","Free HSPU 4x5"],pull:["Full FL 6x5-8s","FL PU 4x3-5","1-Arm PU 3x1-2","Muscle-Up 3x3"],handstand:["Free HS 5x60s","Press HS 4x3","Free HSPU 4x5","1-Arm HS 3x3-5s"],core:["DF Weighted 4x5","Wiper 4x8","V-Sit 3x15s","Core Circuit 15min"],skill:["Human Flag 5x8-10s","Full DF 5x5-8","SHOWCASE 30min","Film Results"]}
+};
+var WU={
+push:["Arm Circles depan 15x","Arm Circles belakang 15x","Wrist Circles 20x each","Wrist Push-Up Stretch 30s","Shoulder Dislocate (tuala) 10x","Scapular Push-Up 10x","Push-Up ringan 10x","Planche Lean ringan 3x5s","Cat-Cow 10x"],
+pull:["Arm Circles depan 15x","Arm Circles belakang 15x","Dead Hang 30s","Active Hang 2x10s","Scapular Pull-Up 10x","Band Pull-Apart (tuala) 15x","Cat-Cow 10x","Thoracic Rotation 8x each","Pull-Up ringan 3x"],
+handstand:["Wrist Circles 20x each","Wrist Push-Up Stretch 30s","Wrist Flexor Stretch 30s each","Wrist Extensor Stretch 30s each","Fingers-Back Stretch 30s","Pike Hold ringan 2x15s","Wall Walk slow 2x","Shoulder Shrug at wall 10x","Cat-Cow 10x","Downward Dog 30s"],
+core:["Cat-Cow 10x","Dead Bug 10x each","Bird Dog 8x each","Lying Knee Tucks 10x","Plank ringan 20s","Side Plank 15s each","Thoracic Rotation 8x each","Hip Circles 10x each","Hollow Body ringan 15s"],
+skill:["Full Body Circle 10x each","Arm Circles 15x each","Wrist Circles 20x each","Dead Hang 20s","Shoulder Dislocate 10x","Cat-Cow 10x","Downward Dog 30s","Pike Hold 15s","Scapular Push-Up 8x","Scapular Pull-Up 8x"],
+legs:["Leg Swings depan-belakang 15x each","Leg Swings sisi 15x each","Hip Circles 10x each","Squat slow 10x","Lunge Walk 8x each","Calf Raise slow 15x","Ankle Circles 15x each","Glute Bridge 10x","Knee Circles 10x each"],
+rest:["Light Walk 5 min","Full Body Stretch 10 min","Deep Breathing 2 min"]
+};
+var CD={
+push:["Chest Doorway Stretch 30s each","Shoulder Cross-Body 30s each","Wrist Flexor Stretch 30s each","Tricep Stretch 30s each","Child Pose 45s","Cat-Cow slow 8x","Deep Breathing 1 min"],
+pull:["Lat Stretch (hang) 30s","Bicep Wall Stretch 30s each","Thoracic Extension 30s","Shoulder Cross-Body 30s each","Child Pose 45s","Forearm Stretch 30s each","Deep Breathing 1 min"],
+handstand:["Wrist Flexor Stretch 45s each","Wrist Extensor Stretch 45s each","Shoulder Stretch 30s each","Child Pose 45s","Downward Dog 30s","Chest Stretch 30s","Neck Stretch 20s each","Deep Breathing 1 min"],
+core:["Cobra Stretch 30s","Child Pose 30s","Spinal Twist 30s each","Hip Flexor Stretch 30s each","Cat-Cow slow 8x","Seated Forward Fold 30s","Deep Breathing 1 min"],
+skill:["Hang passive 30s","Child Pose 30s","Cobra 30s","Spinal Twist 30s each","Wrist Stretch 30s each","Shoulder Stretch 30s each","Deep Breathing 1 min"],
+legs:["Quad Stretch 30s each","Hamstring Stretch 30s each","Hip Flexor Stretch 30s each","Calf Stretch 30s each","Pigeon Pose 30s each","Forward Fold 30s","Deep Breathing 1 min"],
+rest:["Full Body Stretch 15 min","Deep Breathing 3 min"]
+};
+function gp(d){for(var i=0;i<PH.length;i++){if(d>=PH[i].a&&d<=PH[i].b)return PH[i]}return null}
+function gw(d){return Math.floor((d-PS)/(864e5*7))+1}
+function isDL(d){var w=gw(d);return w>0&&w%4===0}
+function dwk(d){var p=gp(d);if(!p)return null;var s=p.s[d.getDay()];if(!s)return null;return{t:s.t,l:s.l,c:s.c,p:p,dl:isDL(d),wk:gw(d)}}
+function getD(d){var w=dwk(d);if(!w)return null;var ex=(WD[w.p.id]||{})[w.t]||[];if(w.dl){var ne=[];for(var i=0;i<ex.length;i++){ne.push(ex[i]+" [DL]")}ex=ne}return{t:w.t,l:w.l,c:w.c,p:w.p,dl:w.dl,wk:w.wk,ex:ex}}
+function pad(n){return n<10?'0'+n:''+n}
+function dk(y,m,d){return y+'-'+pad(m+1)+'-'+pad(d)}
+function getChk(key){try{var d=localStorage.getItem('chk_'+key);return d?JSON.parse(d):{}}catch(e){return{}}}
+function setChk(key,data){try{localStorage.setItem('chk_'+key,JSON.stringify(data))}catch(e){}}
+function getDone(key){try{return localStorage.getItem('done_'+key)==='1'}catch(e){return false}}
+function setDone(key,v){try{localStorage.setItem('done_'+key,v?'1':'0')}catch(e){}}
+function getStreak(){try{var s=localStorage.getItem('streak');return s?parseInt(s):0}catch(e){return 0}}
+function setStreak(n){try{localStorage.setItem('streak',''+n)}catch(e){}}
+function getLastDone(){try{return localStorage.getItem('lastDone')||''}catch(e){return''}}
+function setLastDone(d){try{localStorage.setItem('lastDone',d)}catch(e){}}
+function updateStreak(dateKey){var last=getLastDone();var today=new Date();var todayKey=dk(today.getFullYear(),today.getMonth(),today.getDate());var yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);var yestKey=dk(yesterday.getFullYear(),yesterday.getMonth(),yesterday.getDate());var streak=getStreak();if(dateKey===todayKey){if(last===yestKey||last===''){streak++;setStreak(streak)}else if(last!==todayKey){streak=1;setStreak(streak)}setLastDone(todayKey)}document.getElementById('streakNum').textContent=streak}
+function updProg(){var box=document.getElementById('MI');if(!box)return;var items=box.querySelectorAll('.chk-item');var total=items.length;if(total===0)return;var checked=box.querySelectorAll('.chk-item.checked').length;var pct=Math.round((checked/total)*100);var fill=document.getElementById('progFill');var txt=document.getElementById('progText');var btn=document.getElementById('compBtn');if(fill)fill.style.width=pct+'%';if(txt)txt.textContent=checked+'/'+total+' siap ('+pct+'%)';if(btn){if(pct>=100){btn.className='complete-btn all-done';btn.textContent='🔥 SEMUA SIAP! Tekan untuk COMPLETE! 🔥'}else{btn.className='complete-btn not-done';btn.textContent=checked+'/'+total+' — Belum habis'}}}document.getElementById('T1').onclick=function(){doTab(1)};
+document.getElementById('T2').onclick=function(){doTab(2)};
+document.getElementById('T3').onclick=function(){doTab(3)};
+document.getElementById('T4').onclick=function(){doTab(4)};
+document.getElementById('T5').onclick=function(){doTab(5)};
+function doTab(n){for(var i=1;i<=5;i++){document.getElementById('T'+i).className=(i===n)?'on':'';document.getElementById('P'+i).style.display=(i===n)?'block':'none'}if(n===2)bTL();if(n===3)bPR();if(n===4)bEX()}
+document.getElementById('BPR').onclick=function(){cM--;if(cM<0){cM=11;cY--}if(cY<2026||(cY===2026&&cM<3)){cY=2026;cM=3}rC()};
+document.getElementById('BNX').onclick=function(){cM++;if(cM>11){cM=0;cY++}if(cY>2027){cY=2027;cM=11}rC()};
+function rC(){document.getElementById('MT').textContent=BN[cM]+' '+cY;var mid=new Date(cY,cM,15),ph=gp(mid),mp=document.getElementById('MP');mp.textContent=ph?ph.n:'';mp.style.color=ph?ph.cl:'#a0aec0';var g=document.getElementById('GR'),h='',i;for(i=0;i<HR.length;i++){h+='<div class="gh">'+HR[i]+'</div>'}var fd=new Date(cY,cM,1).getDay(),dm=new Date(cY,cM+1,0).getDate();for(i=0;i<fd;i++){h+='<div class="gd empty"></div>'}for(var d=1;d<=dm;d++){var dt=new Date(cY,cM,d),w=dwk(dt),ip=dt>=PS&&dt<=PE,cl='gd',inn='<div class="dn">'+d+'</div>';var dkey=dk(cY,cM,d);var isD=getDone(dkey);if(isD)cl+=' done';if(ip&&w){if(w.t==='rest')cl+=' rest';if(w.dl)inn+='<span class="dt tdd">📉DL</span>';inn+='<span class="dt '+w.c+'">'+w.l+'</span>';if(isD)inn+='<span class="done-dot">✅</span>'}else if(!ip){cl+=' rest'}h+='<div class="'+cl+'" onclick="sM('+cY+','+cM+','+d+')">'+inn+'</div>'}g.innerHTML=h;document.getElementById('streakNum').textContent=getStreak()}
+document.getElementById('MBG').onclick=function(e){if(e.target===this)this.style.display='none'};
+document.getElementById('MBAR').onclick=function(){document.getElementById('MBG').style.display='none'};
+document.getElementById('cClose').onclick=function(){document.getElementById('CELEB').className='celebrate';document.getElementById('fireLayer').className='fire-overlay';document.getElementById('fireLayer').innerHTML=''};
+document.getElementById('CELEB').onclick=function(e){if(e.target===this){this.className='celebrate';document.getElementById('fireLayer').className='fire-overlay';document.getElementById('fireLayer').innerHTML=''}};
+window.curKey='';
+window.sM=function(y,m,d){var dt=new Date(y,m,d),w=getD(dt),box=document.getElementById('MI');var dkey=dk(y,m,d);window.curKey=dkey;if(!w){box.innerHTML='<h3>'+d+' '+BN[m]+' '+y+'</h3><p class="rmsg">Di luar program</p>';document.getElementById('MBG').style.display='block';return}var saved=getChk(dkey);var allItems=[];var wu=WU[w.t]||WU.skill;var cd=CD[w.t]||CD.skill;if(w.t!=='rest'){for(var i=0;i<wu.length;i++)allItems.push({emoji:'🔥',text:wu[i],sec:'wu',idx:i});for(var i=0;i<w.ex.length;i++)allItems.push({emoji:'💪',text:w.ex[i],sec:'ex',idx:i});for(var i=0;i<cd.length;i++)allItems.push({emoji:'🧊',text:cd[i],sec:'cd',idx:i})}var itemsH='';if(w.t==='rest'){itemsH='<p class="rmsg">🧘 Rehat aktif. Stretching 15-20 min.</p>'}else{itemsH+='<div class="m-prog-text" id="progText">0/'+allItems.length+'</div>';itemsH+='<div class="m-prog"><div class="m-prog-fill" id="progFill" style="width:0%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div>';itemsH+='<div class="notes" style="margin-bottom:5px"><h4 style="color:#ea580c">🔥 WARM-UP</h4></div>';for(var i=0;i<allItems.length;i++){var it=allItems[i];var k=it.sec+'_'+it.idx;var isC=saved[k]===true;if(it.sec==='ex'&&it.idx===0)itemsH+='<div class="notes" style="margin-bottom:5px;margin-top:8px"><h4 style="color:#667eea">💪 WORKOUT</h4></div>';if(it.sec==='cd'&&it.idx===0)itemsH+='<div class="notes" style="margin-bottom:5px;margin-top:8px"><h4 style="color:#2563eb">🧊 COOL DOWN</h4></div>';itemsH+='<div class="chk-item'+(isC?' checked':'')+'" data-k="'+k+'" onclick="toggleChk(this)"><div class="chk-box">'+(isC?'✓':'')+'</div><span class="chk-emoji">'+it.emoji+'</span><span class="chk-text">'+it.text+'</span></div>'}itemsH+='<button class="complete-btn not-done" id="compBtn" onclick="completeDay()">Belum habis</button>'}box.innerHTML='<h3>'+HFL[dt.getDay()]+', '+d+' '+BN[m]+' '+y+'</h3><div class="ph">'+w.p.n+' — Minggu '+w.wk+'</div>'+(w.dl?'<div class="dlb">📉 DELOAD -40%</div>':'')+'<div class="tp3">🏋️ '+w.l+'</div>'+itemsH;document.getElementById('MBG').style.display='block';if(w.t!=='rest')updProg()};
+window.toggleChk=function(el){var k=el.getAttribute('data-k');var isC=el.classList.contains('checked');if(isC){el.classList.remove('checked');el.querySelector('.chk-box').textContent=''}else{el.classList.add('checked');el.querySelector('.chk-box').textContent='✓'}var saved=getChk(window.curKey);saved[k]=!isC;setChk(window.curKey,saved);updProg()};
+function spawnFire(){var layer=document.getElementById('fireLayer');layer.className='fire-overlay show';layer.innerHTML='';var emojis=['🔥','🔥','🔥','🔥','🔥','💥','⚡','✨','🌟','💪','🏆','⭐'];var total=60;for(var i=0;i<total;i++){var p=document.createElement('div');p.className='fire-particle';if(i%5===0)p.className+=' big';if(i%3===0)p.className+=' side';p.textContent=emojis[Math.floor(Math.random()*emojis.length)];p.style.left=Math.random()*100+'%';p.style.bottom=(-10+Math.random()*20)+'%';p.style.animationDelay=(Math.random()*1.5)+'s';p.style.animationDuration=(1.5+Math.random()*1.5)+'s';layer.appendChild(p)}setTimeout(function(){for(var j=0;j<30;j++){var p2=document.createElement('div');p2.className='fire-particle';if(j%4===0)p2.className+=' big';p2.textContent=emojis[Math.floor(Math.random()*emojis.length)];p2.style.left=Math.random()*100+'%';p2.style.bottom=(-10+Math.random()*15)+'%';p2.style.animationDelay=(Math.random()*1)+'s';layer.appendChild(p2)}},800);setTimeout(function(){for(var j=0;j<20;j++){var p3=document.createElement('div');p3.className='fire-particle side';p3.textContent='🔥';p3.style.left=Math.random()*100+'%';p3.style.bottom=(Math.random()*10)+'%';p3.style.animationDelay=(Math.random()*0.8)+'s';layer.appendChild(p3)}},1500)}
+window.completeDay=function(){var box=document.getElementById('MI');var items=box.querySelectorAll('.chk-item');var total=items.length;var checked=box.querySelectorAll('.chk-item.checked').length;if(checked<total){for(var i=0;i<items.length;i++){if(!items[i].classList.contains('checked')){items[i].classList.add('checked');items[i].querySelector('.chk-box').textContent='✓';var k=items[i].getAttribute('data-k');var saved=getChk(window.curKey);saved[k]=true;setChk(window.curKey,saved)}}updProg()}setDone(window.curKey,true);updateStreak(window.curKey);rC();document.getElementById('MBG').style.display='none';spawnFire();var msgs=['Workout siap! Hebat!','Konsisten itu kunci!','Satu hari lagi closer to the goal!','Beast mode activated!','Level up! Keep going!','Discipline > Motivation!','Future you will thank you!'];document.getElementById('cMsg').textContent=msgs[Math.floor(Math.random()*msgs.length)];document.getElementById('cStreak').textContent=getStreak();document.getElementById('cSub').textContent='🔥 '+window.curKey+' COMPLETE!';setTimeout(function(){document.getElementById('CELEB').className='celebrate show'},500)};
+function bTL(){var c=document.getElementById('P2C'),h='';for(var i=0;i<PH.length;i++){var p=PH[i],ds=p.a.getDate()+' '+BN[p.a.getMonth()]+' '+p.a.getFullYear(),de=p.b.getDate()+' '+BN[p.b.getMonth()]+' '+p.b.getFullYear(),bd='';for(var j=0;j<p.sk.length;j++){var sk=p.sk[j].toLowerCase(),bc='bh';if(sk.indexOf('fl')>=0)bc='bf';if(sk.indexOf('pl')>=0)bc='bp';if(sk.indexOf('df')>=0||sk.indexOf('dragon')>=0)bc='bd';if(sk.indexOf('flag')>=0||sk.indexOf('hf')>=0)bc='by';bd+='<span class="'+bc+'">'+p.sk[j]+'</span>'}h+='<div class="card" style="border-left:4px solid '+p.cl+'"><h3 style="color:'+p.cl+'">'+p.n+'</h3><div class="sm">📅 '+ds+' → '+de+' ('+p.w+')</div><p>'+p.d+'</p><div class="badges">'+bd+'</div></div>'}h+='<div class="tips"><h4>💡 Tips</h4><ul><li>🔄 Setiap 4 minggu DELOAD</li><li>📹 Video tiap 2 minggu</li><li>🥗 Protein 1.6-2.2g/kg</li><li>😴 Tidur 10pm!</li><li>🐉 Dragon Flag paling cepat</li><li>🟣 Planche paling lama</li></ul></div>';c.innerHTML=h}
+function bPR(){var c=document.getElementById('P3C'),sk=[{n:"🤸 Handstand",cl:"#16a34a",m:["Bln 3: Wall HS 60s","Bln 6: Free 5s","Bln 9: Free 10s","Bln 12: Free 15s","Bln 15: Free 30s","Bln 20: Free 60s"]},{n:"🔵 Front Lever",cl:"#2563eb",m:["Bln 3: Tuck 10s","Bln 6: Adv Tuck 8s","Bln 9: Half Lay 5s","Bln 12: Straddle 5s","Bln 16: Full 3s","Bln 20: Full 5-8s"]},{n:"🟣 Planche",cl:"#7c3aed",m:["Bln 3: Lean 15s","Bln 6: Tuck 5s","Bln 9: Adv Tuck 5s","Bln 13: Straddle 3s","Bln 17: Straddle 5s","Bln 20: Full Try"]},{n:"🐉 Dragon Flag",cl:"#ea580c",m:["Bln 2: Tuck 5 reps","Bln 4: Single Leg","Bln 6: Full Neg 3","Bln 9: Full 3","Bln 12: Full 5","Bln 18: 8 reps"]},{n:"🚩 Human Flag",cl:"#ca8a04",m:["Bln 3: Elbow Flag","Bln 6: Side Flag 5s","Bln 9: Kicks","Bln 12: HF 3s","Bln 16: HF 5s","Bln 20: HF 8-10s"]}],h='';for(var i=0;i<sk.length;i++){var s=sk[i],ml='';for(var j=0;j<s.m.length;j++){ml+='📍 <b>'+s.m[j]+'</b><br>'}h+='<div class="card"><h3 style="color:'+s.cl+'">'+s.n+'</h3><div class="pbar"><div class="pfill" style="width:100%;background:linear-gradient(90deg,'+s.cl+'55,'+s.cl+')">20 Bulan</div></div><div class="miles">'+ml+'</div></div>'}c.innerHTML=h}
+function bEX(){var c=document.getElementById('P4C'),tl={push:"🟣 Push/Planche",pull:"🔵 Pull/FL",handstand:"🟢 Handstand",core:"🟠 Core/DF",skill:"🟡 Skill/Flag",legs:"🔴 Legs"},h='';for(var i=0;i<PH.length;i++){var p=PH[i],d=WD[p.id];if(!d)continue;h+='<div class="card" style="border-left:4px solid '+p.cl+'"><h3 style="color:'+p.cl+'">'+p.n+'</h3>';for(var t in d){h+='<div class="extype"><h4>'+(tl[t]||t)+'</h4><ul>';for(var j=0;j<d[t].length;j++){h+='<li>• '+d[t][j]+'</li>'}h+='</ul></div>'}h+='</div>'}c.innerHTML=h}
+document.getElementById('IA').onclick=function(){doICS('full')};
+document.getElementById('I6').onclick=function(){doICS('2026')};
+document.getElementById('I7').onclick=function(){doICS('2027')};
+function doICS(r){var st=document.getElementById('IS');st.style.display='block';st.innerHTML='<p>⏳ Generating...</p>';var sd=new Date(PS),ed=new Date(PE);if(r==='2026')ed=new Date(2026,11,31);if(r==='2027')sd=new Date(2027,0,1);var evs=[],cur=new Date(sd),cnt=0;while(cur<=ed){var w=dwk(cur);if(w&&cur>=PS){var wu2=WU[w.t]||WU.skill;var cd2=CD[w.t]||CD.skill;var desc='WARM-UP: ';for(var i=0;i<wu2.length;i++){desc+=wu2[i]+'. '}desc+='WORKOUT: ';var el=(WD[w.p.id]||{})[w.t]||[];for(var i=0;i<el.length;i++){desc+=el[i]+'. '}desc+='COOL DOWN: ';for(var i=0;i<cd2.length;i++){desc+=cd2[i]+'. '}var title='['+w.t.toUpperCase()+'] '+w.l;if(w.dl)title='[DELOAD] '+w.l;evs.push({date:new Date(cur),title:title,desc:desc});cnt++}cur.setDate(cur.getDate()+1)}var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Cali//MS\r\nCALSCALE:GREGORIAN\r\nX-WR-CALNAME:Calisthenics\r\n';var now=new Date(),stamp=now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+'T'+pad(now.getHours())+pad(now.getMinutes())+pad(now.getSeconds());for(var i=0;i<evs.length;i++){var ev=evs[i],dd2=ev.date,ds2=dd2.getFullYear()+pad(dd2.getMonth()+1)+pad(dd2.getDate());ics+='BEGIN:VEVENT\r\nDTSTART;VALUE=DATE:'+ds2+'\r\nDTEND;VALUE=DATE:'+ds2+'\r\nDTSTAMP:'+stamp+'\r\nUID:c-'+ds2+'-'+i+'@w\r\nSUMMARY:'+ev.title+'\r\nDESCRIPTION:'+ev.desc+'\r\nEND:VEVENT\r\n'}ics+='END:VCALENDAR';var blob=new Blob([ics],{type:'text/calendar'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='calisthenics-'+r+'.ics';document.body.appendChild(a);a.click();document.body.removeChild(a);st.innerHTML='<p>✅ '+cnt+' events!</p>';setTimeout(function(){st.style.display='none'},4000)}
+var deferredPrompt;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='block'});
+document.getElementById('installBtn').onclick=function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('installBtn').style.display='none'})}};
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
+rC();
+</script>
+</body>
+</html>
