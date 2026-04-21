@@ -1,1 +1,8 @@
-
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.smelltreep_pixel.twa",
+        "sha256_cert_fingerprints": ["65:48:C0:9B:DC:78:CF:A0:97:23:F7:2A:79:10:D8:EE:18:A7:F2:50:5B:F5:D9:13:71:E6:09:2A:47:EE:1D:67"]
+      }
+    }]
